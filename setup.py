@@ -11,9 +11,11 @@ setup(
     url="https://github.com/majamassarini/automate-prometheus-exporter",
     packages=find_packages(),
     install_requires=[
-        "automate-home>=1.0.0",
         "prometheus-client>=0.19.0",
     ],
+    # Note: automate-home is not on PyPI, install it separately:
+    # git clone https://github.com/majamassarini/automate-home.git
+    # cd automate-home && pip install .
     python_requires=">=3.10",
     classifiers=[
         "Development Status :: 3 - Alpha",
