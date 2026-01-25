@@ -6,3 +6,7 @@ Listens to Redis for appliance state changes and pushes metrics to Prometheus Pu
 """
 
 __version__ = "0.1.0"
+
+from prometheus_exporter import conf, handler
+
+__all__ = ["__version__", "conf", "handler"]
