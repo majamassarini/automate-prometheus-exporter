@@ -6,7 +6,9 @@ import logging.config
 import time
 
 import home
-import prometheus_exporter
+import prometheus_exporter.conf
+import prometheus_exporter.handler.appliance.registry
+import prometheus_exporter.handler.event.registry
 from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
 
 
@@ -66,7 +68,7 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
         old_state, new_state = appliance.update(new_appliance)
 
         try:
-            appliance_handler = prometheus_exporter.handler.appliance.registry.mapper[
+            appliance_handler = prometheus_exporter.handler.appliance.registry[
                 appliance.__class__
             ]
             appliance_handler = appliance_handler(self._home_resources, appliance, self)
@@ -76,7 +78,7 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
         # Process events from state changes
         for event in new_state - old_state:
             try:
-                event_handler = prometheus_exporter.handler.event.registry.mapper[
+                event_handler = prometheus_exporter.handler.event.registry[
                     event.__class__
                 ]
                 event_handler = event_handler(self._home_resources, event, self)
