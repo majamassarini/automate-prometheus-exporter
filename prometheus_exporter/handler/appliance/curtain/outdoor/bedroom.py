@@ -6,6 +6,7 @@ class Handler(Parent):
     """Handler for outdoor bedroom curtain."""
 
     KLASS = home.appliance.curtain.outdoor.bedroom.Appliance
+    METRIC_PREFIX = "home_curtain_outdoor_bedroom"
 
     def get_value(self):
         """
