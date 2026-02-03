@@ -6,6 +6,7 @@ class Handler(Parent):
     """Handler for presence lights."""
 
     KLASS = home.appliance.light.presence.Appliance
+    METRIC_PREFIX = "home_light_indoor_presence"
 
     def get_value(self):
         """

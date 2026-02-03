@@ -6,6 +6,7 @@ class Handler(Parent):
     """Handler for zone lights."""
 
     KLASS = home.appliance.light.zone.Appliance
+    METRIC_PREFIX = "home_light_indoor_zone"
 
     def get_value(self):
         """
