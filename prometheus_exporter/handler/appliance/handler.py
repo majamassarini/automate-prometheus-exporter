@@ -30,8 +30,7 @@ class Handler(metaclass=Registry):
     def get_value(self):
         """
         Get the current value to export as a metric.
-        Override in subclasses to extract specific values from appliance state.
 
-        :return: numeric value or None if no value to export
+        :return: the appliance state VALUE, or None if not applicable
         """
-        return None
+        return self._appliance.state.VALUE
