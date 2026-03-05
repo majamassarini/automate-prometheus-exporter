@@ -116,7 +116,7 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
                 self._logger.info(f"Updated metric {metric_name}{{appliance=\"{appliance.name}\"}} = {value}")
 
         # Push all metrics to Pushgateway
-        await asyncio.get_event_loop().run_in_executor(
+        await asyncio.get_running_loop().run_in_executor(
             None, self.push_to_pushgateway
         )
 
@@ -147,7 +147,8 @@ if __name__ == "__main__":
     )
     logging.config.dictConfig(configuration)
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     resources = home.builder.listener.Resources(
         options.project_dir,
         options.redis_host,
