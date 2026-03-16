@@ -32,6 +32,7 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
         self._registry = CollectorRegistry()
         self._enums = {}
         self._gauges = {}
+        self._state_index_gauges = {}
         self._state_values_cache = {}
 
     @staticmethod
@@ -113,6 +114,22 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
             )
         return self._gauges[metric_name]
 
+    def _get_or_create_state_index_gauge(self, metric_name, description):
+        """Get or create a Gauge metric encoding the active state as a numeric index.
+
+        The index is the 0-based position of the state in the sorted list of
+        possible state values.  Grafana value mappings can then translate each
+        integer back to the human-readable state name.
+        """
+        if metric_name not in self._state_index_gauges:
+            self._state_index_gauges[metric_name] = Gauge(
+                metric_name,
+                description,
+                labelnames=["appliance"],
+                registry=self._registry,
+            )
+        return self._state_index_gauges[metric_name]
+
     def push_to_pushgateway(self):
         """Push all metrics to the Prometheus Pushgateway."""
         try:
@@ -150,9 +167,17 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
                 enum_metric.labels(appliance=appliance.name).state(
                     current_value
                 )
+                state_index = state_values.index(current_value)
+                index_gauge = self._get_or_create_state_index_gauge(
+                    f"{prefix}_state_index",
+                    f"{appliance.__class__.__name__} state index"
+                    f" (sorted states: {', '.join(state_values)})",
+                )
+                index_gauge.labels(appliance=appliance.name).set(state_index)
                 self._logger.info(
                     f"Updated {prefix}_state"
                     f'{{appliance="{appliance.name}"}} = {current_value}'
+                    f" (index {state_index})"
                 )
 
         # Export numeric measurements from float/int events (sensor appliances).
