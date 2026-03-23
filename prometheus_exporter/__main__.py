@@ -11,7 +11,6 @@ import home
 import prometheus_exporter.conf
 from prometheus_client import CollectorRegistry, Enum, Gauge, push_to_gateway
 
-
 sys.path.append("..")
 
 
@@ -76,9 +75,7 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
         ):
             try:
                 submod = importlib.import_module(submod_name)
-                for _name, obj in inspect.getmembers(
-                    submod, inspect.isclass
-                ):
+                for _name, obj in inspect.getmembers(submod, inspect.isclass):
                     if not obj.__module__.startswith(state_pkg_name):
                         continue
                     val = getattr(obj, "VALUE", None)
@@ -133,9 +130,7 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
     def push_to_pushgateway(self):
         """Push all metrics to the Prometheus Pushgateway."""
         try:
-            gateway_url = (
-                f"{self._pushgateway_host}:{self._pushgateway_port}"
-            )
+            gateway_url = f"{self._pushgateway_host}:{self._pushgateway_port}"
             push_to_gateway(
                 gateway_url,
                 job=self._job_name,
@@ -215,21 +210,21 @@ class OnRedisMsg(home.builder.listener.OnRedisMsg):
 
 
 if __name__ == "__main__":
-    (options, _) = home.options.parser().parse_args()
+    options, _ = home.options.parser().parse_args()
     if options.configuration_file:
         options = home.configs.parse(vars(options), options.configuration_file)
 
     # Import plugins based on configuration
     if options.knx_usbhid or options.knxnet_ip:
-        import knx_plugin
+        importlib.import_module("knx_plugin")
     if options.lifx:
-        import lifx_plugin
+        importlib.import_module("lifx_plugin")
     if options.sonos:
-        import soco_plugin
+        importlib.import_module("soco_plugin")
     if options.somfy_sdn:
-        import somfy_sdn_plugin
+        importlib.import_module("somfy_sdn_plugin")
     if options.home_assistant:
-        import home_assistant_plugin
+        importlib.import_module("home_assistant_plugin")
 
     configuration = prometheus_exporter.conf.default_logging_configuration(
         options.logging_dir,
