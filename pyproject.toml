@@ -39,10 +39,6 @@ dev = [
     "mypy",
     "coverage",
 ]
-docs = [
-    "sphinx",
-    "sphinx-rtd-theme",
-]
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -56,8 +52,13 @@ omit = ["*tests*", "*__init__.py"]
 no_strict_optional = true
 exclude = ["tests/", "^docs/"]
 
+[[tool.mypy.overrides]]
+module = ["home", "home.*", "prometheus_client", "prometheus_client.*"]
+ignore_missing_imports = true
+
 [tool.black]
 line-length = 79
+target-version = ["py313"]
 
 [tool.flake8]
 max-line-length = 79
