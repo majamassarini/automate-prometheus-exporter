@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "automate-prometheus-exporter"
+version = "0.1.0"
+description = "Prometheus metrics exporter for the automate-home project"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Maja Massarini", email = "maja.massarini@gmail.com" }]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Home Automation",
+    "Intended Audience :: Developers",
+]
+dependencies = ["prometheus-client>=0.19.0"]
+
+[project.urls]
+Homepage = "https://github.com/majamassarini/automate-prometheus-exporter"
+
+[project.scripts]
+prometheus-exporter = "prometheus_exporter.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "flake8-pyproject",
+    "black",
+    "mypy",
+    "coverage",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["prometheus_exporter*"]
+
+[tool.coverage.run]
+command_line = "-m unittest discover -s tests -p 'test*.py'"
+omit = ["*tests*", "*__init__.py"]
+
+[tool.mypy]
+no_strict_optional = true
+exclude = ["tests/", "^docs/"]
+
+[[tool.mypy.overrides]]
+module = ["home", "home.*", "prometheus_client", "prometheus_client.*"]
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 79
+target-version = ["py313"]
+
+[tool.flake8]
+max-line-length = 79
+max-doc-length = 120
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+    "*.egg-info",
+]
+extend-ignore = [
+    "E203",
+    "W503",
+    "E501",
+    "F821",
+]
+per-file-ignores = [
+    "*/__init__.py:F401,E402",
+]
